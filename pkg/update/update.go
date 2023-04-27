@@ -483,7 +483,9 @@ func (o *Options) proposeChanges(repo *git.Repository, ref plumbing.ReferenceNam
 		return "", fmt.Errorf("failed to create pull request: %w", err)
 	}
 	err = gitOpts.LabelIssue(context.Background(), newPR.Owner, newPR.RepoName, *pr.Number, &[]string{updateLabel})
-
+	if err != nil {
+		o.Logger.Printf("ERROR: failed to label PR #%v due to %v", *pr.Number, err)
+	}
 	if newVersion.ReplaceExistingPRNumber != 0 {
 		err = gitOpts.ClosePullRequest(context.Background(), gitURL.Organisation, gitURL.Name, newVersion.ReplaceExistingPRNumber)
 		if err != nil {
